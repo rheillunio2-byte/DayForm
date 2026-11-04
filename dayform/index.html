@@ -1,0 +1,310 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <meta name="theme-color" content="#f6f5f2" id="themeColorMeta" />
+  <title>Dayform — Plan your time. Build your routine.</title>
+  <script>
+    /* Apply saved theme / sidebar state before first paint to avoid a flash. */
+    try{var p=JSON.parse(localStorage.getItem('dayform-prefs-v1')||'{}');var t=p.theme||'system';
+    var d=t==='dark'||(t==='system'&&matchMedia('(prefers-color-scheme: dark)').matches);
+    document.documentElement.dataset.theme=d?'dark':'light';
+    if(p.sidebar==='collapsed')document.documentElement.dataset.sidebar='collapsed';}catch(e){}
+  </script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <!-- Icon sprite (Lucide-style, inlined: no dependency) -->
+  <svg width="0" height="0" style="position:absolute" aria-hidden="true">
+    <symbol id="i-dashboard" viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="9" rx="1"/><rect x="14" y="3" width="7" height="5" rx="1"/><rect x="14" y="12" width="7" height="9" rx="1"/><rect x="3" y="16" width="7" height="5" rx="1"/></symbol>
+    <symbol id="i-calendar" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></symbol>
+    <symbol id="i-cap" viewBox="0 0 24 24"><path d="M22 10 12 5 2 10l10 5 10-5z"/><path d="M6 12v5c3 2 9 2 12 0v-5"/></symbol>
+    <symbol id="i-dumbbell" viewBox="0 0 24 24"><path d="M6.5 6.5v11M17.5 6.5v11M3 9v6M21 9v6M6.5 12h11"/></symbol>
+    <symbol id="i-utensils" viewBox="0 0 24 24"><path d="M3 2v7a2 2 0 0 0 2 2h2a2 2 0 0 0 2-2V2M6 2v20M19 15V2a5 5 0 0 0-5 5v6a2 2 0 0 0 2 2h3zm0 0v7"/></symbol>
+    <symbol id="i-repeat" viewBox="0 0 24 24"><path d="m17 2 4 4-4 4"/><path d="M3 11v-1a4 4 0 0 1 4-4h14"/><path d="m7 22-4-4 4-4"/><path d="M21 13v1a4 4 0 0 1-4 4H3"/></symbol>
+    <symbol id="i-check-square" viewBox="0 0 24 24"><path d="m9 11 3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></symbol>
+    <symbol id="i-template" viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="7" rx="1"/><rect x="3" y="14" width="9" height="7" rx="1"/><rect x="16" y="14" width="5" height="7" rx="1"/></symbol>
+    <symbol id="i-settings" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 1 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 1 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 1 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 1 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></symbol>
+    <symbol id="i-plus" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></symbol>
+    <symbol id="i-chevron-left" viewBox="0 0 24 24"><path d="m15 18-6-6 6-6"/></symbol>
+    <symbol id="i-chevron-right" viewBox="0 0 24 24"><path d="m9 18 6-6-6-6"/></symbol>
+    <symbol id="i-search" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></symbol>
+    <symbol id="i-sun" viewBox="0 0 24 24"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></symbol>
+    <symbol id="i-moon" viewBox="0 0 24 24"><path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9z"/></symbol>
+    <symbol id="i-star" viewBox="0 0 24 24"><path d="m12 2 3.1 6.3 6.9 1-5 4.9 1.2 6.8L12 17.8 5.8 21l1.2-6.8-5-4.9 6.9-1z"/></symbol>
+    <symbol id="i-x" viewBox="0 0 24 24"><path d="M18 6 6 18M6 6l12 12"/></symbol>
+    <symbol id="i-download" viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M7 10l5 5 5-5M12 15V3"/></symbol>
+    <symbol id="i-copy" viewBox="0 0 24 24"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></symbol>
+    <symbol id="i-pencil" viewBox="0 0 24 24"><path d="M17 3a2.8 2.8 0 0 1 4 4L7.5 20.5 2 22l1.5-5.5z"/></symbol>
+    <symbol id="i-trash" viewBox="0 0 24 24"><path d="M3 6h18M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></symbol>
+    <symbol id="i-check" viewBox="0 0 24 24"><path d="m20 6-11 11-5-5"/></symbol>
+    <symbol id="i-clock" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></symbol>
+    <symbol id="i-pin" viewBox="0 0 24 24"><path d="M20 10c0 6-8 12-8 12S4 16 4 10a8 8 0 0 1 16 0z"/><circle cx="12" cy="10" r="3"/></symbol>
+    <symbol id="i-menu" viewBox="0 0 24 24"><path d="M3 12h18M3 6h18M3 18h18"/></symbol>
+    <symbol id="i-arrow-right" viewBox="0 0 24 24"><path d="M5 12h14m-7-7 7 7-7 7"/></symbol>
+    <symbol id="i-alert" viewBox="0 0 24 24"><path d="m10.3 3.9-8.5 14.7A2 2 0 0 0 3.5 21h17a2 2 0 0 0 1.7-2.4L13.7 3.9a2 2 0 0 0-3.4 0zM12 9v4M12 17h.01"/></symbol>
+    <symbol id="i-panel" viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M9 3v18"/></symbol>
+    <symbol id="i-briefcase" viewBox="0 0 24 24"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/></symbol>
+    <symbol id="i-layers" viewBox="0 0 24 24"><path d="m12 2 10 5-10 5L2 7z"/><path d="m2 17 10 5 10-5M2 12l10 5 10-5"/></symbol>
+    <symbol id="i-monitor" viewBox="0 0 24 24"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4"/></symbol>
+  </svg>
+
+  <div class="app-shell" id="appShell">
+    <aside class="sidebar" id="sidebar" aria-label="Sidebar">
+      <div class="sidebar-head">
+        <a class="brand" href="#dashboard" aria-label="Dayform home" data-goto="dashboard">
+          <svg class="brand-mark" viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="5" fill="var(--accent)"/><rect x="7" y="8" width="3" height="8" rx="1.5" fill="#fff"/><rect x="10.5" y="6" width="3" height="10" rx="1.5" fill="#fff" opacity=".75"/><rect x="14" y="10" width="3" height="6" rx="1.5" fill="#fff" opacity=".5"/></svg>
+          <span class="brand-word">Dayform</span>
+        </a>
+        <button class="icon-btn" id="collapseSidebar" aria-label="Collapse sidebar" title="Collapse sidebar"><svg class="ic"><use href="#i-panel"/></svg></button>
+      </div>
+      <div class="sidebar-actions">
+        <button class="btn primary new-btn" id="sidebarQuickAdd" title="New activity"><svg class="ic"><use href="#i-plus"/></svg><span class="nav-text">New activity</span></button>
+        <button class="search-trigger" id="openSearch" title="Search (Ctrl K)"><svg class="ic"><use href="#i-search"/></svg><span class="nav-text">Search</span><kbd class="nav-text">Ctrl K</kbd></button>
+      </div>
+      <nav class="main-nav" aria-label="Main navigation">
+        <button class="nav-item active" data-page="dashboard" title="Dashboard"><svg class="ic"><use href="#i-dashboard"/></svg><span class="nav-text">Dashboard</span></button>
+        <button class="nav-item" data-page="schedule" title="My Schedule"><svg class="ic"><use href="#i-calendar"/></svg><span class="nav-text">My Schedule</span></button>
+        <div class="nav-label"><span class="nav-text">Planners</span></div>
+        <button class="nav-item" data-page="academic" title="Academic Planner"><svg class="ic"><use href="#i-cap"/></svg><span class="nav-text">Academic Planner</span></button>
+        <button class="nav-item" data-page="workout" title="Workout Planner"><svg class="ic"><use href="#i-dumbbell"/></svg><span class="nav-text">Workout Planner</span></button>
+        <button class="nav-item" data-page="meals" title="Meal Planner"><svg class="ic"><use href="#i-utensils"/></svg><span class="nav-text">Meal Planner</span></button>
+        <button class="nav-item" data-page="habits" title="Habits and Routines"><svg class="ic"><use href="#i-repeat"/></svg><span class="nav-text">Habits &amp; Routines</span></button>
+        <button class="nav-item" data-page="tasks" title="Tasks and Events"><svg class="ic"><use href="#i-check-square"/></svg><span class="nav-text">Tasks &amp; Events</span></button>
+        <div class="nav-label"><span class="nav-text">Library</span></div>
+        <button class="nav-item" data-page="templates" title="Templates"><svg class="ic"><use href="#i-template"/></svg><span class="nav-text">Templates</span><span class="nav-count nav-text" id="templateCount">0</span></button>
+      </nav>
+      <div class="sidebar-bottom">
+        <button class="nav-item" data-page="settings" title="Settings"><svg class="ic"><use href="#i-settings"/></svg><span class="nav-text">Settings</span></button>
+        <div class="profile"><div class="avatar">DF</div><div class="nav-text profile-text"><strong>Dayform User</strong><small>Personal workspace</small></div></div>
+      </div>
+    </aside>
+    <div class="scrim" id="scrim"></div>
+
+    <main class="main-content">
+      <header class="topbar">
+        <button class="icon-btn mobile-only" id="mobileMenu" aria-label="Open menu"><svg class="ic"><use href="#i-menu"/></svg></button>
+        <div class="breadcrumbs"><span>Dayform</span><svg class="ic sep"><use href="#i-chevron-right"/></svg><strong id="breadcrumbCurrent">Dashboard</strong></div>
+        <div class="topbar-actions">
+          <span class="today-label" id="topDate"></span>
+          <button class="icon-btn mobile-only" id="topSearch" aria-label="Search"><svg class="ic"><use href="#i-search"/></svg></button>
+          <button class="icon-btn" id="themeToggle" aria-label="Toggle theme" title="Toggle theme"><svg class="ic"><use href="#i-moon"/></svg></button>
+        </div>
+      </header>
+
+      <div class="content">
+      <!-- DASHBOARD -->
+      <section class="page active" id="page-dashboard">
+        <header class="page-head">
+          <div>
+            <p class="page-date" id="welcomeDate"></p>
+            <h1 id="greeting">Good morning</h1>
+            <p class="page-sub" id="dashSub"></p>
+          </div>
+          <button class="btn primary" id="dashboardAdd"><svg class="ic"><use href="#i-plus"/></svg>Add activity</button>
+        </header>
+        <div class="dash-grid">
+          <div class="dash-main">
+            <section class="upnext-wrap" id="upNext" aria-live="polite"></section>
+            <section class="block">
+              <div class="block-head"><h2>Today</h2><span class="muted" id="todayPretty"></span><button class="link-btn" data-goto="schedule">Open schedule<svg class="ic"><use href="#i-arrow-right"/></svg></button></div>
+              <div id="todayTimeline" class="agenda"></div>
+            </section>
+            <section class="block">
+              <div class="block-head"><h2>This week</h2><span class="muted">Tap a day to open it</span></div>
+              <div class="mini-week" id="miniWeek"></div>
+            </section>
+          </div>
+          <aside class="dash-side">
+            <section class="block progress-block">
+              <div class="progress-row">
+                <div class="ring"><svg viewBox="0 0 56 56" aria-hidden="true"><circle class="ring-track" cx="28" cy="28" r="24"/><circle class="ring-fill" id="progressRing" cx="28" cy="28" r="24"/></svg><span id="progressPercent">0%</span></div>
+                <div><h2 class="progress-title" id="progressTitle">No activities yet</h2><p class="muted" id="progressNote">Start with one small win.</p></div>
+              </div>
+            </section>
+            <section class="block">
+              <div class="block-head"><h2>Coming up</h2></div>
+              <div class="rows" id="comingUp"></div>
+            </section>
+            <section class="block">
+              <div class="block-head"><h2>Quick templates</h2><button class="link-btn" data-goto="templates">See all</button></div>
+              <div class="rows" id="quickTemplates"></div>
+            </section>
+            <p class="daily-note" id="dailyNote"></p>
+          </aside>
+        </div>
+      </section>
+
+      <!-- SCHEDULE -->
+      <section class="page" id="page-schedule">
+        <header class="page-head compact">
+          <div><h1>My schedule</h1><p class="page-sub">See the shape of your days and make room for what matters.</p></div>
+          <div class="head-actions"><button class="btn secondary" id="exportButton"><svg class="ic"><use href="#i-download"/></svg>Export</button><button class="btn primary" id="scheduleAdd"><svg class="ic"><use href="#i-plus"/></svg>Add activity</button></div>
+        </header>
+        <div class="cal-toolbar">
+          <div class="cal-nav">
+            <button class="icon-btn bordered" id="prevPeriod" aria-label="Previous"><svg class="ic"><use href="#i-chevron-left"/></svg></button>
+            <button class="btn secondary sm" id="goToday">Today</button>
+            <button class="icon-btn bordered" id="nextPeriod" aria-label="Next"><svg class="ic"><use href="#i-chevron-right"/></svg></button>
+            <strong id="periodLabel" class="period-label"></strong>
+          </div>
+          <div class="seg" role="tablist" aria-label="Calendar view"><button class="view-btn" data-view="day">Day</button><button class="view-btn active" data-view="week">Week</button><button class="view-btn" data-view="month">Month</button></div>
+          <div class="filter-chips" id="categoryFilter" role="group" aria-label="Filter by category">
+            <button class="fchip active" data-filter="all">All</button>
+            <button class="fchip cat-academic" data-filter="Academic"><i></i>Academic</button>
+            <button class="fchip cat-workout" data-filter="Workout"><i></i>Workout</button>
+            <button class="fchip cat-meal" data-filter="Meal"><i></i>Meals</button>
+            <button class="fchip cat-routine" data-filter="Routine"><i></i>Routine</button>
+            <button class="fchip cat-work" data-filter="Work"><i></i>Work</button>
+            <button class="fchip cat-task" data-filter="Task"><i></i>Tasks</button>
+            <button class="fchip cat-personal" data-filter="Personal"><i></i>Personal</button>
+          </div>
+        </div>
+        <div class="cal-surface" id="calendarSurface"></div>
+      </section>
+
+      <!-- TEMPLATES -->
+      <section class="page" id="page-templates">
+        <header class="page-head compact">
+          <div><h1>Templates</h1><p class="page-sub">Build a routine once, then place it on any week in a few clicks.</p></div>
+          <div class="head-actions"><button class="btn secondary" id="saveCurrentSchedule"><svg class="ic"><use href="#i-calendar"/></svg>Save current week</button><button class="btn primary" id="createTemplate"><svg class="ic"><use href="#i-plus"/></svg>New template</button></div>
+        </header>
+        <div class="template-controls">
+          <div class="seg scroll-x" id="templateTabs">
+            <button class="active" data-template-category="All">All <span id="allTemplateCount">0</span></button>
+            <button data-template-category="Academic">Academic</button>
+            <button data-template-category="Workout">Workout</button>
+            <button data-template-category="Meal">Meal plans</button>
+            <button data-template-category="Routine">Routines</button>
+            <button data-template-category="Custom">Custom</button>
+            <button data-template-category="Favorites"><svg class="ic xs"><use href="#i-star"/></svg>Favorites</button>
+          </div>
+          <label class="search-field"><svg class="ic"><use href="#i-search"/></svg><input id="templateSearch" placeholder="Search templates" aria-label="Search templates" autocomplete="off" /></label>
+        </div>
+        <div class="template-grid" id="templateGrid"></div>
+      </section>
+
+      <!-- PLANNERS -->
+      <section class="page" id="page-academic"><header class="page-head compact"><div><h1>Academic planner</h1><p class="page-sub">Keep classes, study sessions and deadlines in sync.</p></div><button class="btn primary" data-add-category="Academic"><svg class="ic"><use href="#i-plus"/></svg>Add class</button></header><div class="planner" id="academicContent"></div></section>
+      <section class="page" id="page-workout"><header class="page-head compact"><div><h1>Workout planner</h1><p class="page-sub">Build a training rhythm that works for you.</p></div><button class="btn primary" data-add-category="Workout"><svg class="ic"><use href="#i-plus"/></svg>Add workout</button></header><div class="planner" id="workoutContent"></div></section>
+      <section class="page" id="page-meals"><header class="page-head compact"><div><h1>Meal planner</h1><p class="page-sub">Give your meals a place in your routine.</p></div><button class="btn primary" data-add-category="Meal"><svg class="ic"><use href="#i-plus"/></svg>Add meal</button></header><div class="planner" id="mealsContent"></div></section>
+      <section class="page" id="page-habits"><header class="page-head compact"><div><h1>Habits &amp; routines</h1><p class="page-sub">Consistency is built one repeatable action at a time.</p></div><button class="btn primary" data-add-category="Routine"><svg class="ic"><use href="#i-plus"/></svg>Add routine</button></header><div class="planner" id="habitsContent"></div></section>
+      <section class="page" id="page-tasks"><header class="page-head compact"><div><h1>Tasks &amp; events</h1><p class="page-sub">Keep important things visible and moving forward.</p></div><button class="btn primary" data-add-category="Task"><svg class="ic"><use href="#i-plus"/></svg>Add task</button></header><div class="planner" id="tasksContent"></div></section>
+
+      <!-- SETTINGS -->
+      <section class="page" id="page-settings">
+        <header class="page-head compact"><div><h1>Settings</h1><p class="page-sub">Manage appearance and your local workspace.</p></div></header>
+        <div class="settings">
+          <div class="settings-group">
+            <h2>Appearance</h2>
+            <div class="settings-row"><div><strong>Theme</strong><small>Match your system or choose a mode.</small></div>
+              <div class="seg" id="themeSeg"><button data-theme-choice="light"><svg class="ic xs"><use href="#i-sun"/></svg>Light</button><button data-theme-choice="dark"><svg class="ic xs"><use href="#i-moon"/></svg>Dark</button><button data-theme-choice="system"><svg class="ic xs"><use href="#i-monitor"/></svg>System</button></div></div>
+          </div>
+          <div class="settings-group">
+            <h2>Workspace data</h2>
+            <p class="muted">Your activities and templates are saved locally in this browser.</p>
+            <div class="settings-row"><div><strong>Export your data</strong><small>Download a backup of your activities and templates.</small></div><button class="btn secondary" id="backupData"><svg class="ic"><use href="#i-download"/></svg>Export JSON</button></div>
+            <div class="settings-row"><div><strong>Reset sample data</strong><small>Restore the original example schedule and templates.</small></div><button class="btn danger" id="resetData">Reset workspace</button></div>
+            <p class="settings-footnote">Dayform uses browser localStorage. Connect a backend such as Supabase before deploying for multi-user accounts and cloud synchronization.</p>
+          </div>
+        </div>
+      </section>
+      </div>
+    </main>
+  </div>
+
+  <!-- ACTIVITY MODAL -->
+  <div class="modal-backdrop" id="activityModal"><div class="modal" role="dialog" aria-modal="true" aria-labelledby="activityModalTitle">
+    <div class="modal-header"><h2 id="activityModalTitle">Add activity</h2><button class="icon-btn" data-close="activityModal" aria-label="Close"><svg class="ic"><use href="#i-x"/></svg></button></div>
+    <form id="activityForm" novalidate><input type="hidden" id="activityId">
+      <div class="modal-body"><div class="form-grid">
+        <label class="field full">Activity name<input id="activityTitle" maxlength="80" placeholder="e.g. Introduction to Programming" autocomplete="off"><span class="field-error"></span></label>
+        <label class="field">Category<select id="activityCategory"><option>Academic</option><option>Workout</option><option>Meal</option><option>Routine</option><option>Work</option><option>Task</option><option>Personal</option></select></label>
+        <label class="field">Date<input id="activityDate" type="date"><span class="field-error"></span></label>
+        <label class="field">Start time<input id="activityStart" type="time" value="09:00"><span class="field-error"></span></label>
+        <label class="field">End time<input id="activityEnd" type="time" value="10:00"><span class="field-error"></span></label>
+        <div class="inline-note full" id="activityConflict" hidden></div>
+        <label class="field full"><span class="lbl">Location <span class="optional">Optional</span></span><input id="activityLocation" placeholder="Room, gym, home…" autocomplete="off"></label>
+        <label class="field full"><span class="lbl">Notes <span class="optional">Optional</span></span><textarea id="activityNotes" rows="2" placeholder="Add any useful details…"></textarea></label>
+        <label class="check-field full"><input type="checkbox" id="activityCompleted"><span>Mark as completed</span></label>
+      </div></div>
+      <div class="modal-footer"><button type="button" class="btn danger hidden" id="deleteActivity"><svg class="ic"><use href="#i-trash"/></svg>Delete</button><span></span><button type="button" class="btn secondary" data-close="activityModal">Cancel</button><button class="btn primary" type="submit">Save activity</button></div>
+    </form>
+  </div></div>
+
+  <!-- TEMPLATE EDITOR MODAL -->
+  <div class="modal-backdrop" id="templateModal"><div class="modal wide" role="dialog" aria-modal="true" aria-labelledby="templateModalTitle">
+    <div class="modal-header"><h2 id="templateModalTitle">New template</h2><button class="icon-btn" data-close="templateModal" aria-label="Close"><svg class="ic"><use href="#i-x"/></svg></button></div>
+    <form id="templateForm" novalidate><input type="hidden" id="templateId">
+      <div class="modal-body">
+        <div class="form-grid">
+          <label class="field">Template name<input id="templateName" maxlength="60" placeholder="e.g. Semester class timetable" autocomplete="off"><span class="field-error"></span></label>
+          <label class="field">Category<select id="templateCategory"><option>Academic</option><option>Workout</option><option>Meal</option><option>Routine</option><option>Work</option><option>Custom</option></select></label>
+          <label class="field full"><span class="lbl">Description <span class="optional">Optional</span></span><input id="templateDescription" maxlength="140" placeholder="A short note about this routine" autocomplete="off"></label>
+        </div>
+        <div class="te-bar"><div><strong>Activities</strong><small id="templateActivityCount">0 activities</small></div><button type="button" class="btn secondary sm" id="addTemplateActivity"><svg class="ic"><use href="#i-plus"/></svg>Add activity</button></div>
+        <div class="te-head"><span>Activity</span><span>Day</span><span>Start</span><span>End</span><span></span></div>
+        <div id="templateActivityEditor" class="template-activity-editor"></div>
+        <div class="field-error block-error" id="templateError"></div>
+      </div>
+      <div class="modal-footer"><span></span><button type="button" class="btn secondary" data-close="templateModal">Cancel</button><button class="btn primary" type="submit">Save template</button></div>
+    </form>
+  </div></div>
+
+  <!-- APPLY TEMPLATE (3 steps) -->
+  <div class="modal-backdrop" id="applyModal"><div class="modal" role="dialog" aria-modal="true" aria-labelledby="applyTitle">
+    <div class="modal-header"><h2 id="applyTitle">Apply template</h2><button class="icon-btn" data-close="applyModal" aria-label="Close"><svg class="ic"><use href="#i-x"/></svg></button></div>
+    <ol class="stepper" id="applyStepper"><li class="active"><b>1</b>Template</li><li><b>2</b>Target</li><li><b>3</b>Review</li></ol>
+    <form id="applyForm" novalidate>
+      <div class="modal-body">
+        <div class="step active" data-step="1">
+          <label class="field">Template<select id="applyTemplateId"></select></label>
+          <div class="apply-summary" id="applySummary"></div>
+        </div>
+        <div class="step" data-step="2">
+          <label class="field">Start date<input type="date" id="applyStartDate"><span class="field-error"></span></label>
+          <div class="field-label">Apply to</div>
+          <div class="seg full-seg" data-seg="applyFrequency"><button type="button" data-value="week" class="active">A full week</button><button type="button" data-value="single">Selected day</button><button type="button" data-value="four">Next 4 weeks</button></div>
+          <input type="hidden" id="applyFrequency" value="week">
+          <div class="apply-days" id="applyDays"><div class="field-label">Days to include</div><div class="day-checks">
+            <label><input type="checkbox" value="1" checked><span>Mon</span></label><label><input type="checkbox" value="2" checked><span>Tue</span></label><label><input type="checkbox" value="3" checked><span>Wed</span></label><label><input type="checkbox" value="4" checked><span>Thu</span></label><label><input type="checkbox" value="5" checked><span>Fri</span></label><label><input type="checkbox" value="6" checked><span>Sat</span></label><label><input type="checkbox" value="0" checked><span>Sun</span></label></div></div>
+          <div class="field-label">Existing activities</div>
+          <div class="opt-cards" data-seg="applyMode"><button type="button" data-value="merge" class="active"><strong>Merge</strong><small>Keep what's there and add the template.</small></button><button type="button" data-value="replace"><strong>Replace</strong><small>Clear the days the template covers first.</small></button></div>
+          <input type="hidden" id="applyMode" value="merge">
+        </div>
+        <div class="step" data-step="3">
+          <div class="review" id="reviewStats"></div>
+          <div class="conflict-preview" id="conflictPreview"></div>
+        </div>
+      </div>
+      <div class="modal-footer"><button type="button" class="btn ghost" id="applyBack" hidden>Back</button><span></span><button type="button" class="btn secondary" data-close="applyModal">Cancel</button><button type="button" class="btn primary" id="applyNext">Continue</button><button class="btn primary" type="submit" id="applySubmit" hidden>Apply schedule</button></div>
+    </form>
+  </div></div>
+
+  <!-- TEMPLATE PREVIEW -->
+  <div class="modal-backdrop" id="previewModal"><div class="modal wide" role="dialog" aria-modal="true" aria-labelledby="previewTitle">
+    <div class="modal-header"><div><h2 id="previewTitle">Template preview</h2><p class="modal-sub" id="previewSub"></p></div><button class="icon-btn" data-close="previewModal" aria-label="Close"><svg class="ic"><use href="#i-x"/></svg></button></div>
+    <div class="modal-body" id="previewContent"></div>
+    <div class="modal-footer"><button class="btn secondary" id="previewEdit"><svg class="ic"><use href="#i-pencil"/></svg>Edit</button><span></span><button class="btn primary" id="previewApply">Apply template<svg class="ic"><use href="#i-arrow-right"/></svg></button></div>
+  </div></div>
+
+  <!-- CONFIRM -->
+  <div class="modal-backdrop top" id="confirmModal"><div class="modal small" role="alertdialog" aria-modal="true" aria-labelledby="confirmTitle" aria-describedby="confirmMessage">
+    <div class="modal-body confirm-body"><h2 id="confirmTitle">Are you sure?</h2><p id="confirmMessage"></p></div>
+    <div class="modal-footer"><span></span><button class="btn secondary" id="confirmCancel">Cancel</button><button class="btn primary" id="confirmOk">Confirm</button></div>
+  </div></div>
+
+  <!-- SEARCH -->
+  <div class="modal-backdrop top-aligned" id="searchModal"><div class="modal search-modal" role="dialog" aria-modal="true" aria-label="Search">
+    <div class="search-input-row"><svg class="ic"><use href="#i-search"/></svg><input id="searchInput" placeholder="Search activities, templates, pages…" autocomplete="off" aria-label="Search"><kbd>Esc</kbd></div>
+    <div class="search-results" id="searchResults"></div>
+  </div></div>
+
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+  <script src="app.js"></script>
+</body>
+</html>
